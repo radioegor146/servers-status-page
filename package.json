@@ -1,6 +1,6 @@
 {
   "name": "servers-status-page",
-  "description": "Servers status page",
+  "description": "Simple status page for my own servers at https://servers.re146.dev",
   "version": "1.0.0",
   "main": "src/main.ts",
   "repository": "https://github.com/radioegor146/servers-status-page",
