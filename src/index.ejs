@@ -1,0 +1,90 @@
+<html lang="en">
+<head>
+    <title>Servers status</title>
+    <style>
+        * {
+            font-family: monospace;
+        }
+
+        .status-block {
+            width: 16px;
+            height: 16px;
+            background-color: yellow;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ok-status {
+            background-color: lime;
+        }
+
+        .failed-status {
+            background-color: red;
+        }
+    </style>
+</head>
+<body style="max-width: fit-content;">
+<h1>Servers</h1>
+<hr>
+<% for (let i = 0; i < servers.length; i++) { const server = servers[i]; %>
+<div>
+    <div style="float: right; display: flex; gap: 10px" class="statuses-block" data-id="<%= i %>">
+        <span class="status-block" data-type="ping">P</span> <span class="status-block" data-type="ssh">S</span>
+    </div>
+    <h2><%= server.name %> </h2>
+    <div style="margin-left: 10px">
+        <div>Specs: <%= server.description %></div>
+        <div>Platform: <%= server.platform %></div>
+        <div style="margin-left: 10px">
+            <h4 style="margin-left: -10px">Connection and forwarded ports:</h4>
+            <pre>ssh access.servers.re146.dev -p <%= 10000 + (i + 1) * 100 + 22 %></pre>
+            <pre>access.servers.re146.dev:<%= 20000 + (i + 1) * 100 + 22 %>-<%= 20000 + (i + 1) * 100 + 22 %> -> 10000-10099</pre>
+        </div>
+    </div>
+</div>
+<% } %>
+<script>
+    let serversCount = <%= servers.length %>;
+
+    function updateStatus(element, status) {
+        element.classList.remove("ok-status");
+        element.classList.remove("failed-status");
+        if (status === true) {
+            element.classList.add("ok-status");
+        }
+        if (status === false) {
+            element.classList.add("failed-status");
+        }
+    }
+
+    function updateServerStatus(index, ping, ssh) {
+        const pingStatus = document.querySelector(`div[data-id="${index}"] > span[data-type="ping"]`);
+        updateStatus(pingStatus, ping);
+        const sshStatus = document.querySelector(`div[data-id="${index}"] > span[data-type="ssh"]`);
+        updateStatus(sshStatus, ssh);
+    }
+
+    function updateStatuses() {
+        fetch("/statuses")
+            .then(result => result.json())
+            .then(result => {
+                for (let i = 0; i < serversCount; i++) {
+                    updateServerStatus(i, result[i].ping, result[i].ssh);
+                }
+            })
+            .catch(e => {
+                console.error(e);
+                for (let i = 0; i < serversCount; i++) {
+                    updateServerStatus(i, null, null);
+                }
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        setInterval(() => updateStatuses(), 5000);
+        updateStatuses();
+    });
+</script>
+</body>
+</html>

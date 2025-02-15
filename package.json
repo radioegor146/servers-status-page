@@ -1,0 +1,26 @@
+{
+  "name": "servers-status-page",
+  "description": "Servers status page",
+  "version": "1.0.0",
+  "main": "src/main.ts",
+  "repository": "https://github.com/radioegor146/servers-status-page",
+  "author": "radioegor146",
+  "license": "MIT",
+  "scripts": {
+    "start": "tsx src/main.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "@types/ejs": "^3.1.5",
+    "@types/express": "^5.0.0",
+    "@types/ping": "^0.4.4",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "ping": "^0.4.4",
+    "promise-socket": "^8.0.0",
+    "tslog": "^4.9.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}
