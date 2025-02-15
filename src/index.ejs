@@ -40,7 +40,7 @@
         <div>Platform: <%= server.platform %></div>
         <div style="margin-left: 10px">
             <h4 style="margin-left: -10px">Connection and forwarded ports:</h4>
-            <pre>ssh access.servers.re146.dev -p <%= 10000 + (i + 1) * 100 + 22 %></pre>
+            <pre>ssh root@access.servers.re146.dev -p <%= 10000 + (i + 1) * 100 + 22 %></pre>
             <pre>access.servers.re146.dev:<%= 20000 + (i + 1) * 100 + 22 %>-<%= 20000 + (i + 1) * 100 + 22 %> -> 10000-10099</pre>
         </div>
     </div>
