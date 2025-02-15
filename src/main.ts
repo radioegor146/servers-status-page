@@ -100,6 +100,14 @@ app.get("/statuses", (req, res) => {
     res.json(statuses);
 });
 
+app.get("/favicon.ico", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "src", "favicon.svg"));
+});
+
+app.get("/favicon.svg", (req, res) => {
+    res.sendFile(path.join(process.cwd(), "src", "favicon.svg"));
+});
+
 app.listen(PORT, (error) => {
     if (error) {
         throw error;
