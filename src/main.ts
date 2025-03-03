@@ -13,13 +13,29 @@ const logger = getLogger();
 
 const PORT = parseInt(process.env.PORT ?? "8080");
 const SERVER_COUNT = parseInt(process.env.SERVER_COUNT ?? "0");
+const START_SERVER_IP = process.env.START_SERVER_IP ?? "10.0.146.10";
+
+function getServerIP(startIp: string, index: number): string {
+    const octets = startIp.split(".").map(item => parseInt(item));
+    octets[3] += index;
+
+    for (let i = 2; i >= 0; i--) {
+        octets[i] += Math.floor(octets[i + 1] / 256);
+        octets[i + 1] %= 256;
+    }
+    return octets.join(".");
+}
+
 const servers: ServerInfo[] = [];
-for (let index = 1; index <= SERVER_COUNT; index++) {
+for (let index = 0; index < SERVER_COUNT; index++) {
     const server = process.env[`SERVER_${index}`];
     if (!server) {
         throw new Error(`SERVER_${index} does not exist`);
     }
-    servers.push(JSON.parse(server));
+    servers.push({
+        ...JSON.parse(server),
+        ip: getServerIP(START_SERVER_IP, index)
+    });
 }
 
 const app = express();
@@ -37,7 +53,7 @@ app.get("/", (req, res) => {
 async function checkSSH(ip: string): Promise<boolean> {
     const socket = new PromiseSocket();
     try {
-        const result = await Promise.race([new Promise((resolve, reject) =>
+        const result = await Promise.race([new Promise((resolve) =>
             setTimeout(() => resolve("failed"), 1000)), socket.connect({
             host: ip,
             port: 22
